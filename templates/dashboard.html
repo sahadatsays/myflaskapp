@@ -3,5 +3,31 @@
 {% block content %}
 
 <h1>This is Dashboard <small>{{ session['username'] }}</small></h1>
+<div class="row">
+    <a href="/add_article" class="btn btn-primary">Add Article</a>
+</div>
+<dir class="row">
+    <table class="table table-striped">
+        <tr>
+            <th>Title</th>
+            <th>Auth</th>
+            <th>Created date</th>
+            <th>Actions</th>
+        </tr>
+        {% for article in articles %}
+        <tr>
+            <td>{{ article[1] }}</td>
+            <td>{{ article[3] }}</td>
+            <td>{{ article[4] }}</td>
+            <td>
+                <a href="/article/edit/{{ article[0] }}" class="btn btn-info btn-xs">Edit</a>
+                <a href="/article/delete/{{ article[0] }}" class="btn btn-danger btn-xs">Delete</a>
+            </td>
+        </tr>
+
+
+        {% endfor %}
+    </table>
+</dir>
 
 {% endblock %}

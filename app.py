@@ -131,6 +131,7 @@ def is_logged_in(f):
 
 #Logout 
 @app.route('/logout')
+@is_logged_in
 def logout():
     session.clear()
     flash('You are now Logged out', 'success')
@@ -141,7 +142,57 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
-    return render_template('dashboard.html')
+    # Crate cursor
+    cur = conn.cursor()
+    
+    # Query 
+    check = cur.execute("SELECT * FROM articles ORDER BY created_at  DESC")
+
+    # Get data
+    articles = cur.fetchall()
+
+    # Close DB
+    cur.close()
+
+    if check > 0:
+        
+        return render_template('dashboard.html', articles=articles)
+    else:
+        msg = "Articles not found."
+        return render_template('dashboard.html', msg=msg)
+
+# Add Article
+class ArtilceForm(Form):
+    title = StringField('Title', [validators.length(min=5, max=200)])
+    body = TextAreaField('Body', [validators.length(min=15)])
+
+@app.route('/add_article', methods=['GET', 'POST'])
+@is_logged_in
+def add_article():
+    form = ArtilceForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+
+        # Create Cursor
+        cur = conn.cursor()
+
+        # Execute
+        cur.execute("INSERT INTO articles(title, body, auth) VALUES (%s, %s, %s)", (title, body, session['username']))
+
+        # Commint to DB
+        conn.commit()
+
+        # Connection close
+        cur.close()
+
+        # Flash Message set
+        flash("Article Created.", "success")
+
+        # Redirect to tergate page
+        return redirect(url_for('dashboard'))
+    return render_template('add_article.html', form=form)
 
 #main function
 if __name__ == '__main__':
