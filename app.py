@@ -33,7 +33,37 @@ def about():
 #Articles
 @app.route('/articles')
 def articles():
-    return render_template('articles.html', articles=Articles)
+    # Create cursor
+    cur = conn.cursor()
+
+    # Query
+    check = cur.execute("SELECT * FROM articles ORDER BY created_at DESC")
+
+    # Get Articles
+    articles = cur.fetchall()
+    if check > 0:
+        return render_template('articles.html', articles=articles)
+    else:
+        msg = "No article found"
+        return render_template('articles.html', msg=msg)
+
+# Single Article
+@app.route('/article/<string:id>/')
+def article(id):
+    # Create cursor
+    cur = conn.cursor()
+
+    # Query 
+    check = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+
+    # Get Article
+    article = cur.fetchone()
+
+    if check > 0:
+        
+        return render_template('single_article.html', article=article)
+
+
 
 #Register form
 class RegisterForm(Form):
