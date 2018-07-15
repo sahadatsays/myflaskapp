@@ -5,6 +5,10 @@
 <div class="jumbotron text-center">
     <h1 class="display-4">Flask Beginner Blog</h1>
     <p class="lead">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo amet nemo exercitationem blanditiis modi earum, aspernatur libero velit repudiandae possimus. Dolore adipisci, obcaecati optio distinctio vitae omnis natus. Ut, unde!</p>
+    {% if session.logged_in == NULL %}
+        <a href="/register" class="btn btn-primary btn-lg">Register</a>
+        <a href="/login" class="btn btn-warning btn-lg">Login</a>
+    {% endif %}
 </div>
 
 {% endblock %}
