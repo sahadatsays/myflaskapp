@@ -223,6 +223,53 @@ def add_article():
         # Redirect to tergate page
         return redirect(url_for('dashboard'))
     return render_template('add_article.html', form=form)
+# Edit Article
+
+@app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
+def edit_article(id):
+    # Create cursor
+    cur = conn.cursor()
+
+    # Execute query
+    check = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+
+    # Get article
+    article = cur.fetchone()
+    
+    # Get form
+    form = ArtilceForm(request.form)
+
+    # Populate article form fields
+    form.title.data = article[1]
+    form.body.data = article[2]
+
+    # Submit for Update
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+
+        # Create cursor
+        cur = conn.cursor()
+
+        # Execute
+        cur.execute("UPDATE articles SET title=%s, body=%s WHERE id=%s", (title, body, id))
+
+        # Commit to DB
+        conn.commit()
+
+        # Close connection
+        cur.close()
+
+        # Set flash message
+        flash("Article Update", "success")
+
+        return redirect(url_for('dashboard'))
+    
+    return render_template('edit_article.html', form = form)
+
+# Delete Article 
+
 
 #main function
 if __name__ == '__main__':
