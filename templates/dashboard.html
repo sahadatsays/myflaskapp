@@ -6,7 +6,8 @@
 <div class="row">
     <a href="/add_article" class="btn btn-primary">Add Article</a>
 </div>
-<dir class="row">
+{% if articles != NULL %}
+<div class="row">
     <table class="table table-striped">
         <tr>
             <th>Title</th>
@@ -35,6 +36,7 @@
 
         {% endfor %}
     </table>
-</dir>
+</div>
+{% endif %}
 
 {% endblock %}

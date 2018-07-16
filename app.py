@@ -176,7 +176,7 @@ def dashboard():
     cur = conn.cursor()
     
     # Query 
-    check = cur.execute("SELECT * FROM articles ORDER BY created_at  DESC")
+    check = cur.execute("SELECT * FROM articles WHERE auth=%s ORDER BY created_at  DESC",(session['username']))
 
     # Get data
     articles = cur.fetchall()
